@@ -1,1 +1,366 @@
+#pragma once
+#include <iostream>
+#include <cmath>
+#include <ctime>
+#include <cstdlib>
+#include <iomanip>
+#define size 10000
+#define rsize 100
+#define csize 100
+#define xmax 100
+#define xmin -100
+#define ymax 100
+#define ymin -100
 
+using namespace std;
+
+//declare the policestation class
+class policestation;
+
+//Define the point class
+class point {
+private:
+	double x;
+	double y;
+	//Policestation reference that will be used to access the limits of the area covered by police station to set the boundaries of the generated randome numbers
+	policestation *pref; 
+
+public:
+	//Default constructor of clas point gets random number in between the values delimited by the limits of the area covered by a police station by default
+	point() {
+		x = rand() % (xmax - xmin) + xmin;
+		y = rand() % (ymax - ymin) + ymin;
+	}
+
+	//Declare the non default constructor but define it in the maincode document to avoid compilation problems related to the lack of initialization of policestation class
+	point(policestation* pr);
+
+	//Define the getter and setter functions
+	double getx() { return x; }
+	double gety() { return y; }
+	void setx(double x1) { x = x1; }
+	void sety(double y1) { x = y1; }
+};
+
+
+//define the policecar class
+class policecar {
+private:
+	int ID;
+	static int tpolicecars;
+	double positionx;
+	double positiony;
+	int urgency;
+	//Policestation reference that will be used to access the id of the police station to which the object belongs to 
+	policestation* psreference;
+	int idps;
+	// Point reference that will be used to set the position of the object in between the limits of a police station with boundaries different to the default ones.
+	point *p1;
+
+public:
+	//default constructor of policecar 
+	policecar() {
+		ID = tpolicecars + 200;
+		urgency = rand() % (3) + 1;
+		positionx = rand() % (xmax - xmin) + xmin;
+		positiony = rand() % (ymax - ymin) + ymin;
+		idps = -1;
+		tpolicecars++;
+	}
+
+
+	//Declare the non default constructor but define it in the maincode document to avoid compilation problems related to the lack of initialization of policestation class
+	policecar(policestation* ps, point *p);
+
+
+	//Define the getter and setter functions
+	double getpositionx() { return positionx; }
+	double getpositiony() { return positiony; }
+	int getID() { return ID; }
+	int geturgency() { return urgency; }
+	int gettpolicecars() { return tpolicecars; }
+	int getidps() { return idps; }
+	void settpolicecars(int tpc) { tpolicecars = tpc; }
+	void setpositionx(double newxcoor) { positionx = newxcoor; }
+	void setpositiony(double newycoor) { positiony = newycoor; }
+	void seturgency(int newurgency) { urgency = newurgency; }
+	void setidps(int newpsid) { idps = newpsid; }
+	//The user should not be able to set the number of police cars, therefore there is no need for a set function of this data member
+	//The move police car function to simulate the movement of a car (different from the setter function)
+	void movepolicecar() {
+		positionx = rand() % (xmax - xmin) + xmin;
+		positiony = rand() % (ymax - ymin) + ymin;
+	}
+
+};
+//defintion of the static variable tpolicecars
+int policecar::tpolicecars = 0;
+
+
+//Define the call class 
+class call {
+private:
+	int ID;
+	static int totalnumbercalls;
+	double positionx;
+	double positiony;
+	int urgency;
+	int idps;
+	//Policestation reference that will be used to access the id of the police station to which the object belongs to 
+	policestation* psreference2;
+
+public:
+
+	call() {
+		ID = totalnumbercalls + 300;
+		urgency = 2;
+		positionx = 0;
+		positiony = 0;
+		idps = -1; //set the police station to be -1 unless the non default constructor is used 
+		totalnumbercalls++;
+	}
+
+	//Declare the non default constructor function.
+	call(int urgency1, double xcoordinate, double ycoordinate, policestation* ps1);
+
+	//Define the getter and setter functions
+	int getID() { return ID; }
+	int geturgency() { return urgency; }
+	double getpositionx() { return positionx; }
+	double getpositiony() { return positiony; }
+	int gettotalnumbercalls() { return totalnumbercalls; }
+	int getidps() { return idps; }
+	void seturgency(int urgentl) { urgency = urgentl; }
+	void setidps(int newidps) { idps = newidps; }
+	void setpositionx(int positionx1) { positionx = positionx1; }
+	void setpositiony(int positiony1) { positiony = positiony1; }
+
+};
+//Define the static variable totalnumbercalls
+int call::totalnumbercalls=0;
+
+//Define the class policestation
+class policestation {
+private:
+	int ID;
+	int xmin1;
+	int xmax1;
+	int ymin1;
+	int ymax1;
+	int policecars;
+	int numbercalls;
+	static int idps;
+	//Declare a double pointer of class policecar since the objects that will be the arguments 
+	//of the police station function add police car, should be passed by reference making it necessary 
+	//for the array to be an array of pointers rather than an array of objects. Making an array ensures police station has easy access to all objects created.
+	policecar** pco1ptr; 
+	//Declare a double pointer of class call. This is done since the objects that will be passed in the form of arguments 
+	//to the police station function add call, should be passed by reference making it necessary 
+	//for the array to be an array of pointers rather than an array of objects. Making an array ensures police station has easy access to all objects created.
+	call** callsptr;
+	// Declare a double pointer of type double to later use as a 2d array with dynamically allocated memory
+	double** arrayptr;
+
+public:
+	policestation() {
+		ID = idps + 400; 
+		xmin1 = xmin;
+		xmax1 = xmax;
+		ymin1 = ymin;
+		ymax1 = ymax;
+		policecars = 0;
+		numbercalls = 0;
+		pco1ptr = new policecar * [size]; // Dynamically allocate memory to the double pointer pc1ptr since it is unknown how many cars will be created
+		callsptr = new call * [size]; // Dynamically allocate memory to the double pointer callptr since it is unknown how many calls will be created.
+
+		// Initialize the arrayptr to be a 2d array with dynamically allocated memory
+		arrayptr = new double* [rsize];
+		for (int r = 0; r < rsize; r++)
+		{
+			arrayptr[r] = new double[csize];
+		}											
+
+		idps++; // Increae the static variable to ensure that the ID of all cars and calls are different
+	}
+
+	// Define the non default constructor 
+	policestation(int xmin1, int xmax1, int ymin1, int ymax1) {
+		ID = idps + 400; 
+		//The limits of the covered area should be changed by the ones given by the user
+		this->xmin1 = xmin1;
+		this->xmax1 = xmax1;
+		this->ymin1 = ymin1;
+		this->ymax1 = ymax1;
+		policecars = 0;
+		numbercalls = 0;
+		pco1ptr = new policecar * [size]; //object array
+		callsptr = new call * [size];
+
+		arrayptr = new double* [rsize];
+		for (int r = 0; r < rsize; r++)
+		{
+			arrayptr[r] = new double[csize];
+		}											//dont forget to deallocate the information
+
+		idps++;
+
+	}
+
+	//define the getter and setter functions
+	int getxmin() { return xmin1; }
+	int getxmax() { return xmax1; }
+	int getymin() { return ymin1; }
+	int getymax() { return ymax1; }
+	int getIDps() { return ID; }
+	int getpolicecarsps() { return policecars; }
+	int getnumbercallsps() { return numbercalls; }
+	policecar *getpco1ptr(int object) { return pco1ptr[object]; }
+	call* getcallsptr(int object) { return callsptr[object]; }
+	//The ids should not be accessible to change by the user neither the number of calls and police cars
+	void setxmin(int x1) { xmin1 = x1; }
+	void setymin(int y1) { ymin1 = y1; }
+	void setxmax(int x2) { xmax1 = x2; }
+	void setymax(int y2) { ymax1 = y2; }
+
+	//The call function should take a pointer as an argument to ensure the object is passed by reference 
+	void addcall(call* callarg) {
+		callsptr[numbercalls] = callarg;
+		numbercalls++; //the number of calls should increase to indicate how many calls are under the control of the police station
+	}
+
+	//The car function should take a pointer as an argument to ensure the object is passed by reference 
+	void addpolicecar(policecar* car) {
+		pco1ptr[policecars] = car;
+		policecars++; // the number of calls should increase to indicate how many calls are under the control of the police station
+	}
+
+	//getter and setter functions should be defined
+	policecar* getpolicecar(int numbercar) {
+		// This function is defined considering that the user will consider that the user is referring to object 
+		//number one with the number 1 rather than with 0 as the array that saves the elements created does 
+		return pco1ptr[numbercar - 1]; 
+	}
+
+	call* getcall(int numbercallaccess) {
+		// This function is defined considering that the user will consider that the user is referring to object 
+		//number one with the number 1 rather than with 0 as the array that saves the elements created does 
+		return callsptr[numbercallaccess - 1];
+	}
+
+	//The arguments of this function do not follow the same rule as the getcall and getpolicecar since the function is expected to be used by other parts of the code (following the array rules) rather than user input 
+	double getdistance(int ncall, int npc) {
+		double distance = sqrt(pow(pco1ptr[npc]->getpositionx() - callsptr[ncall]->getpositionx(), 2) + pow(pco1ptr[npc]->getpositiony() - callsptr[ncall]->getpositiony(), 2));
+		return distance;
+	}
+
+	// Function to print the information of all cars
+	void printcarinfo() {
+		cout << "Number of police cars = " << policecars << endl;
+		//Use loop to access all elements of the array pco1ptr and print the information of all the cars
+		for (int i = 0; i < policecars; i++)
+		{
+			cout << "ID " << pco1ptr[i]->getID() << "Urgency Level " << pco1ptr[i]->geturgency() << "Location " << "(" << pco1ptr[i]->getpositionx() << ", " << pco1ptr[i]->getpositiony() << ")" << endl;
+		}
+	}
+
+	// Function to print the information of all calls
+	void printcallinfo() {
+		cout << "Number of calls = " << numbercalls << endl;
+		//Use loop to access all elements of the array callsptr and print the information of all the calls
+		for (int i = 0; i < policecars; i++)
+		{
+			cout << "ID " << callsptr[i]->getID() << "Urgency Level " << callsptr[i]->geturgency() << "Location " << "(" << callsptr[i]->getpositionx() << ", " << callsptr[i]->getpositiony() << ")" << endl;
+		}
+	}
+
+	//Function to print the distance between the calls and the cars
+	void printtable() {
+		for (int i = 0; i < numbercalls; i++) //counter for calls, calls will be at the rows
+		{
+			for (int j = 0; j < policecars; j++) //counter for cars, cars will be at the columns
+			{
+				//Condition if the urgency of car is more than calls then the distance should not be calculated as the car is not available to later be assigned to the call
+				if (pco1ptr[j]->geturgency() > callsptr[i]->geturgency())
+				{
+					arrayptr[i][j] = -1;
+				}
+				// Otherwise the distance should be assigned to the 2d array representing the table
+				else {
+
+					arrayptr[i][j] = getdistance(i, j);
+				}
+			}
+		}
+		cout << "        ";
+		// The Id of all police cars should be printed in the first row of the table. The for loop is used to access all the car objects saved on the array pco1ptr
+		for (int i = 0; i < policecars; i++) {
+			cout << setw(8)<< "PC- " << pco1ptr[i]->getID() << setw(8);
+		}
+		cout << endl;
+		// Next each row will begin by the id of the call
+		for (int i = 0; i < numbercalls; i++)
+		{
+			cout <<setw(5)<< "C- " << callsptr[i]->getID();
+			// The call ids will be followed by the distance there is between that call and all the available cars. The for loop is used to access all the column position
+			for (int j = 0; j < policecars; j++)
+				cout << setw(12) << arrayptr[i][j] << setw(12);
+			cout << endl;
+		}
+	}
+	
+	// Assigncall is used to assign a call to a car
+	void assigncartocall() {
+		//For loop is used to access all calls
+		for (int i = 0; i < numbercalls; i++)
+		{
+			int mindistanceid;
+			int indexofcarobject;
+			int indexofcallobject;
+			double mindistance = INFINITY;
+			// for loop is used to access all police cars
+			for (int q = 0; q < policecars; q++) 
+			{
+				//Mindistance equals to infinity to ensure that the first distance is definitely smaller allowing to later make 
+				//comparisons between the rest of the distances, the -1 condition considers that although -1 is a 
+				//smaller integer than any positive distance, the call will not be wrongfully assigned to a car 
+				//that has different urgency requirements
+				if (mindistance > arrayptr[i][q] && arrayptr[i][q] != -1)
+				{
+					mindistance = arrayptr[i][q]; 
+					mindistanceid = pco1ptr[q]->getID(); // The id of the car to which the call has the shortest
+					//distance is saved to later be able to print its details (if it was not saved it would 
+					//be impossible to identify the id of the car as the index of the loop would always reach up to one less than policecars)
+					indexofcarobject = q; // The index of the car and call is saved due to a similar reasons to the one outlined above
+					indexofcallobject = i;
+				}
+			}
+
+			if (mindistance != INFINITY) // If the mindistance was still infinity it would mean that none of the cars cant be assigned to the calls due to urgency requirements
+			{
+				cout << "Call " << callsptr[i]->getID() << " has been assigned to police car" << mindistanceid << " The distance is " << mindistance << endl;
+				pco1ptr[indexofcarobject]->setpositionx(callsptr[indexofcallobject]->getpositionx());//change the positio of the car to the position of the call to which it has been assigned
+				pco1ptr[indexofcarobject]->setpositiony(callsptr[indexofcallobject]->getpositiony());
+				pco1ptr[indexofcarobject]->seturgency(callsptr[indexofcallobject]->geturgency());// change the urgency of the car to the one of the call to which it has been assigned to 
+			}
+			else
+			{
+				cout << "Call " << callsptr[i]->getID() << "cannot be assigned to a policecar at the moment. Try again" << endl;
+			}
+
+		}
+		
+	} 
+
+	//Deallocate the dynamically allocated memory
+	~policestation() {
+		for (int r = 0; r < rsize; r++)
+		{
+			delete[] arrayptr[r];
+		}
+		delete[] arrayptr;
+		delete[] pco1ptr;
+		delete[] callsptr;
+	}
+};
+
+int policestation::idps = 0;
