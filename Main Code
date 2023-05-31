@@ -1,0 +1,192 @@
+#include "Library21.h"
+
+//define the non default constructor of policecar
+point::point (policestation* pr) {
+	pref = pr;
+	x = rand() % (pref->getxmax() - pref->getxmin()) + pref->getxmin(); // Set the boundaries of the random function generator to be the ones given by the policestations using the pointer to access the getter functions of the police station class
+	y = rand() % (pref->getymax() - pref->getymin()) + pref->getymin();
+}
+
+//define the non default constuctor of policecar
+policecar::policecar(policestation* ps, point *p) {
+	p1 = p;
+	psreference = ps;
+	ID = tpolicecars + 200;
+	urgency = rand() % (3) + 1;
+	positionx = p1->getx(); //Set the location of the car to be within the limits that were saved by the point class object from the policestation class
+	positiony = p1->gety();
+	idps = psreference->getIDps(); //Get the id of the policestation
+	tpolicecars++;
+}
+
+//define the call non default constructor
+call::call(int urgency1, double xcoordinate, double ycoordinate, policestation* ps1) {
+	urgency = urgency1;
+	positionx = xcoordinate;
+	positiony = ycoordinate;
+	ID = totalnumbercalls + 300;
+	idps = ps1->getIDps(); //get the if of the policestation
+	totalnumbercalls++;
+}
+
+
+int main()
+{
+	srand(time(NULL));
+
+
+	                                                         // Test case 1
+
+	//Create the policestation object
+	policestation trial;
+	//Create the objects that will be added
+	policecar car1;
+	policecar car2;
+	policecar car3;
+	call call1;
+	call call2;
+	call call3;
+	
+	//Use the add function to add the cars and calls to the police station object
+	trial.addcall(&call1);
+	trial.addcall(&call2);
+	trial.addcall(&call3);
+	trial.addpolicecar(&car1);
+	trial.addpolicecar(&car2);
+	trial.addpolicecar(&car3);
+
+	//Since the default constructor was used it is necessary to manually initialize the police station id of the objects created 
+	trial.getpco1ptr(0)->setidps(trial.getIDps());
+	trial.getpco1ptr(1)->setidps(trial.getIDps());
+	trial.getpco1ptr(2)->setidps(trial.getIDps());
+	trial.getcallsptr(0)->setidps(trial.getIDps());
+	trial.getcallsptr(1)->setidps(trial.getIDps());
+	trial.getcallsptr(2)->setidps(trial.getIDps());
+	
+	// The output will be shown as follows
+	//Show the details of the cars and calls before assignation.
+	cout << "----------------------Trial 1-----------------------------------------" << endl;
+	trial.printcarinfo();
+	cout << endl << "************************************************************" << endl;
+	trial.printcallinfo();
+	cout << endl << "************************************************************" << endl;
+	//Print the table of distances
+	trial.printtable();
+	cout << endl << "************************************************************" << endl;
+	//Print the assignation of calls 
+	trial.assigncartocall();
+	cout << endl << "************************************************************" << endl;
+	//Print again the information of the car to ensure that the coordinates have changed 
+	trial.printcarinfo();
+	cout << endl << "************************************************************" << endl;
+	cout << endl << "************************************************************" << endl;
+	cout << endl << "************************************************************" << endl;
+	
+	                                                           // Test case 2
+
+	//policestation(int xmin1, int xmax1, int ymin1, int ymax1) {
+	// point (policestation* pr) 
+	//policecar(policestation* ps, point *p) {
+	//call(int urgency1, double xcoordinate, double ycoordinate, policestation * ps1) {
+
+	policestation trial2(-200, 200, -200, 200);
+	point Newpoint (&trial2);
+	call call4(1, 10, 20, &trial2);
+	call call5(2, 20, 30, &trial2);
+	call call6(3, 40, 50, &trial2);
+	policecar car4(&trial2, &Newpoint);
+	policecar car5(&trial2, &Newpoint);
+	policecar car6(&trial2, &Newpoint);
+
+	trial2.addcall(&call4);
+	trial2.addcall(&call5);
+	trial2.addcall(&call6);
+	trial2.addpolicecar(&car4);
+	trial2.addpolicecar(&car5);
+	trial2.addpolicecar(&car6);
+
+	// The output will be shown as follows
+	//Show the details of the cars and calls before assignation.
+	cout << "----------------------Trial 2-----------------------------------------" << endl;
+	trial2.printcarinfo();
+	cout << endl << "************************************************************" << endl;
+	trial2.printcallinfo();
+	cout << endl << "************************************************************" << endl;
+	//Print the table of distances
+	trial2.printtable();
+	cout << endl << "************************************************************" << endl;
+	//Print the assignation of calls 
+	trial2.assigncartocall();
+	cout << endl << "************************************************************" << endl;
+	//Print again the information of the car to ensure that the coordinates have changed 
+	trial2.printcarinfo();
+	cout << endl << "************************************************************" << endl;
+	cout << endl << "************************************************************" << endl;
+	cout << endl << "************************************************************" << endl;
+
+	                                                             // Test case 3
+
+	policestation trial3;
+	//Create the objects that will be added
+	policecar car7;
+	policecar car8;
+	policecar car9;
+	call call7;
+	call call8;
+	call call9;
+
+	//Use the add function to add the cars and calls to the police station object
+	trial3.addcall(&call7);
+	trial3.addcall(&call8);
+	trial3.addcall(&call9);
+	trial3.addpolicecar(&car7);
+	trial3.addpolicecar(&car8);
+	trial3.addpolicecar(&car9);
+
+	//Since the default constructor was used it is necessary to manually initialize the police station id of the objects created 
+	trial3.getpco1ptr(0)->setidps(trial3.getIDps());
+	trial3.getpco1ptr(1)->setidps(trial3.getIDps());
+	trial3.getpco1ptr(2)->setidps(trial3.getIDps());
+	trial3.getcallsptr(0)->setidps(trial3.getIDps());
+	trial3.getcallsptr(1)->setidps(trial3.getIDps());
+	trial3.getcallsptr(2)->setidps(trial3.getIDps());
+
+	cout << "----------------------Trial 3-----------------------------------------" << endl;
+	//Print the information of the car and call to confirm that the changes on the parameters are done correctly.
+	trial3.printcarinfo();
+	cout << endl << "************************************************************" << endl;
+	trial3.printcallinfo();
+	cout << endl << "************************************************************" << endl;
+
+	//Set the paramaters
+	call7.setpositionx(-10);
+	call7.setpositiony(-20);
+	call8.setpositionx(-30);
+	call8.setpositiony(-40);
+	call9.setpositionx(-50);
+	call9.setpositiony(-60);
+
+	cout << endl<<endl;
+	cout << "After the changes to parameters...";
+
+	// The output will be shown as follows
+	//Show the details of the cars and calls before assignation.
+	trial3.printcarinfo();
+	cout << endl << "************************************************************" << endl;
+	trial3.printcallinfo();
+	cout << endl << "************************************************************" << endl;
+	//Print the table of distances
+	trial3.printtable();
+	cout << endl << "************************************************************" << endl;
+	//Print the assignation of calls 
+	trial3.assigncartocall();
+	cout << endl << "************************************************************" << endl;
+	//Print again the information of the car to ensure that the coordinates have changed 
+	trial3.printcarinfo();
+	cout << endl << "************************************************************" << endl;
+	cout << endl << "************************************************************" << endl;
+	cout << endl << "************************************************************" << endl;
+
+	return 0;
+
+}
