@@ -1,2 +1,18 @@
 # Civil-Engineering-Case-Study
 Example of how the calling system of a police station would function when assigning a police car to a call based on parameters such as urgency.
+
+PROGRAMMING SAMPLE
+CIVIL ENGINEERING CASE STUDY
+
+To ensure that emergency situations are addressed by authorities in the most effective possible way, it is important to organize and correctly connect callers to first emergency response organisms regardless of the high or low demand. As a solution to this problem, a software that simulates police call processing system was designed to help assign the calls from all citizens to the nearest available police when they call 999. 
+
+DETAILS OF THE PROGRAM. 
+The program should have three main groups/classes: Police cars, Calls and Police Stations. Each police station will be in charge of covering a certain area delimited by minimum and maximum coordinates. The cars and calls that are present in that area will be under the control of the police station. This means that the police station will assign police cars to calls based on their urgency levels and the distance between them which will be calculated through the formula:
+D= √(2&(x_2-x_1 )^2+(y_2-y_1 )^2 )
+Where 𝑥2, 𝑦2 are the x and y coordinates of the position of car and 𝑥1, 𝑦1 are the x and y coordinates of the position of the call. The urgency level ranges from 1 to 3 with 3 being the most urgent case. Any call with a lower urgency level to a police car cannot be assigned to the police car regardless of the distance. 
+
+The police cars and the calls should have a unique ID, a position (coordinates), urgency level, a reference to the ID of the police station they belong to, and the total number of police cars or calls that have been constructed respectively (the latter will be used to set the ID of the objects). Each police Station should also have a unique ID, the coordinates of the area it covers, and the number of calls and cars that are under its control. The user should be able to set and get the location of each call and car, and their urgency level. The user should be able to access all of the former and latter data members, but should not be able to edit the number of calls, number of cars (unless it is by adding more cars and calls), and the ID of any of the classes. The location of the police cars should be set randomly when they are created and can be changed so that the police car is set again to another random position to simulate the movement of the car. However, once the police car is assigned to the call, the police car should move towards the location of the latter, and therefore change its coordinates to the ones of its assigned call. The urgency level of the car will also be set to be the one of its assigned call. 
+
+For the sake of simplification, a car can be assigned to two calls, at the same time as long as the distance and urgency requirements are fulfilled. If there is no car available for the call a message stating that it was impossible to assign a police car to a police station will be printed.
+
+In addition to the previous functions that the police station object carries out, the police station should also control the addition of cars and calls, print the details of these objects (ID, position, urgency level), print a text stating the results of the assignation of cars to calls, and print a table summarizing the distances between each call and car. A -1 rather than a distance should appear on the latter table when the urgency level requirements are not met (note that even if the car is not available to be assigned to a call the distance will still be displaced on the table).
